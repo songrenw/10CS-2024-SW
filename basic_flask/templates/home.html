@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<div class="w3-display-container">
+  <img src="../static/M3-MacBook-Pro-Wallpaper-8K%20-%20Copy.png" alt="Lights">
+  <h1><div class="w3-display-topmiddle w3-container" style="color: white;">Home</div></h1>
+</div>
+<style>
+.button {
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+
+.button {
+  background-color: black;
+  color: white;
+  border: 3px solid rgba(0, 0, 0, 0.75);
+    border-radius: 12px;
+}
+
+.button:hover {
+  background-color: white;
+  color: black;
+}
+.button {
+  margin-bottom: 5px;
+  margin-left: 10px;}
+img {
+  width: 1920px;
+  height: 50px;
+  object-fit: cover;
+}
+</style>
+
+<a href=/register><button class = "button button" type ="submit">Register</button></a>
+<br>
+<a href=/login><button class = "button button" type ="submit">Login</button></a>
+<br>
+<a href=/calculator><button class = "button button" type ="submit">Calculator</button></a>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Welcome{% endblock %}
+{% block content %}
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<center>
+  <h1 style="font-size:3vw;">Welcome</h1>
+</center>
+<br>
+
+<!--h1>Welcome to my Flask app</h1-->
+<!--We will use JINJA templating to display the username of the user that is logged in -->
+
+<style>
+.button {
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+
+.button {
+  background-color: black;
+  color: white;
+  border: 3px solid rgba(0, 0, 0, 0.75);
+    border-radius: 12px;
+}
+
+.button:hover {
+  background-color: white;
+  color: black;
+}
+
+</style>
+  <div class="w3-card" style="width:20%">
+    <img class="w3-hover-opacity w3-round-xlarge" src=../static/icon.jpg alt="Person" style="width:100%">
+    <div class="w3-container">
+      <center><h1 style="background-color:rgba(55,93,188,0.75);">Hello</h1></center><center><h1><b> {{ user }} </b></h1></center>
+    </div>
+  </div>
+<!--strong>Hello, World!</strong-->
+<br>
+<a href=/calculator><button class = "button button" type ="submit">Calculator</button></a>
+<br>
+<form action="/login" method="get">
+    <button class = "button button" type="submit">Logout</button>
+</form>
+<br>
+{% endblock %}

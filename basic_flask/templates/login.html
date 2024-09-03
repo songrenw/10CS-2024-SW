@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="w3-container w3-round-xxlarge w3-display-middle" style="background-color:rgba(0,0,0,0.51); color: #ffffff;">
+    <div class="w3-center">
+<h1 style="font-size:3vw;">Login</h1>
+</center>
+<style>
+.button {
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+
+.button {
+  background-color: black;
+  color: white;
+  border: 3px solid rgba(0, 0, 0, 0.75);
+    border-radius: 12px;
+}
+
+.button:hover {
+  background-color: white;
+  color: black;
+}
+.input {
+  background-color: #ffffff;
+  color: #000000;
+  border: 2px solid rgba(0, 0, 0, 0.75);
+    border-radius: 6px;
+    margin: 4px 2px;
+}
+.input:hover {
+  background-color: rgba(255, 255, 255, 0.49);
+  color: #000000;
+}
+</style>
+    <form action="/login" method="post">
+        <div class="w3-margin-bottom">Username:
+        <input class="input" type="text" name="username" required><br>
+        </div>
+            <div class="w3-margin-bottom">Password:
+        <input class="input" type="password" name="password" required><br>
+            </div>
+        <button class = "button button" type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href=/register ><button class = "button button" type ="submit">Register</button></a></p>
+    </div>
+{% endblock %}

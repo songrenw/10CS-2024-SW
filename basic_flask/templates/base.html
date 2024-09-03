@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block head %}
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <title>{% block title %}{% endblock %}</title>
+    {% endblock %}
+  </head>
+  <body class="w3-white">
+
+    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="footer" class="w3-center w3-round w3-display-bottommiddle">
+      {% block footer %}
+      &copy; Copyright 2024 by <a href="/">Song-Ren Wang</a>.
+      {% endblock %}
+
+    </div>
+  </body>
+</html>

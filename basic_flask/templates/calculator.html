@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="w3-container w3-round-xxlarge w3-display-middle" style="background-color:rgba(0,0,0,0.51); color: #ffffff;">
+    <div class="w3-center">
+<h1 style="font-size:3vw;">Calculator</h1>
+
+<style>
+.button {
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+
+.button {
+  background-color: black;
+  color: white;
+  border: 3px solid rgba(0, 0, 0, 0.75);
+    border-radius: 12px;
+}
+.input {
+  background-color: #ffffff;
+  color: #000000;
+  border: 2px solid rgba(0, 0, 0, 0.75);
+    border-radius: 6px;
+    margin: 4px 2px;
+}
+.input:hover {
+  background-color: rgba(255, 255, 255, 0.49);
+  color: #000000;
+}
+.button:hover {
+  background-color: white;
+  color: black;
+}
+</style>
+<form action="{{ url_for('calculator') }}" method="post">
+        <label for="num1">number1:</label>
+        <input class="input" type="number" name="num1" id="num1" step="any" required>
+        <br>
+        <label for="num2">number2:</label>
+        <input class="input" type="number" name="num2" id="num2" step="any"required>
+        <br>
+        <select class="input" name="operator">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option> </select><br>
+        <button class="button" type="submit">calculate</button>
+        </form>
+                <h2>Result: {{ result }}</h2>
+    </div>
+{% endblock %}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block head %}
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <title>{% block title %}{% endblock %}</title>
+    {% endblock %}
+  </head>
+  <body class="w3-white">
+  <style>
+.button {
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+
+.button {
+  background-color: black;
+  color: white;
+  border: 3px solid rgba(0, 0, 0, 0.75);
+    border-radius: 12px;
+}
+
+.button:hover {
+  background-color: white;
+  color: black;
+}
+form {
+  margin-bottom: 10px;
+  margin-right: 10px;
+  margin-left: 10px;}
+.input {
+  background-color: #ffffff;
+  color: #000000;
+  border: 2px solid rgba(0, 0, 0, 0.75);
+    border-radius: 6px;
+    margin: 4px 2px;
+}
+.input:hover {
+  background-color: rgba(255, 255, 255, 0.49);
+  color: black;
+}
+</style>
+
+    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="footer" class="w3-center w3-round w3-display-bottommiddle">
+      {% block footer %}
+      &copy; Copyright 2024 by <a href="/">Song-Ren Wang</a>.
+      {% endblock %}
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="w3-container w3-round-xxlarge w3-display-middle" style="background-color:rgba(0,0,0,0.51); color: #ffffff;">
+    <div class="w3-center">
+<h1 style="font-size:3vw;">Register</h1>
+
+<style>
+.button {
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+
+.button {
+  background-color: black;
+  color: white;
+  border: 3px solid rgba(0, 0, 0, 0.75);
+    border-radius: 12px;
+}
+
+.button:hover {
+  background-color: white;
+  color: black;
+}
+form {
+  margin-bottom: 10px;
+  margin-right: 10px;
+  margin-left: 10px;}
+.input {
+  background-color: #ffffff;
+  color: #000000;
+  border: 2px solid rgba(0, 0, 0, 0.75);
+    border-radius: 6px;
+    margin: 4px 2px;
+}
+.input:hover {
+  background-color: rgba(255, 255, 255, 0.49);
+  color: black;
+}
+</style>
+<form action="/register" method="post">
+        <label for="username">Username:</label>
+        <input class="input" type="text" name="username" id="username" required>
+        <br>
+        <label for="password">Password:</label>
+        <input class="input" type="password" name="password" id="password" required>
+        <br>
+        <label for="age">Age:</label>
+        <input class="input" type="number" name="age" id="age" required>
+        <br>
+        <button class="button" type="submit">Register</button>
+</form>
+    <p>Already have an account? <a href=/login><button class = "button button" type ="submit">Login</button></a></p>
+            </div>
+{% endblock %}
