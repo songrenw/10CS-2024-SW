@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="w3-container w3-round-xxlarge w3-display-middle" style="background-color:rgba(0,0,0,0.51); color: #ffffff;">
+    <div class="w3-center">
+<h1 style="font-size:3vw;">Login</h1>
+
+ <form action="/login" method="post"> <!-- form contain different input element -->
+        <label>Username:</label>
+        <input class="input" type="text" name="username" required>
+        <br>
+        <Label>Password:</label>
+        <input class="input" type="password" name="password" required>
+        <br>
+        <button class = "button " type="submit">Login</button>
+    </form>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div>
+                {% for message in messages %}
+                    <p style="color: #ffffff;">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <p>Don't have an account? <a href=/register ><button class = "button button" type ="submit">Register</button></a></p>
+    </div>
+    {% endblock %}

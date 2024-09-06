@@ -7,6 +7,7 @@
     <title>{% block title %}{% endblock %}</title>
     {% endblock %}
   </head>
+
   <body class="w3-white">
   <style>
 .button {
@@ -50,13 +51,14 @@ form {
   color: black;
 }
 </style>
-
     <div id="content">{% block content %}{% endblock %}</div>
     <div id="footer" class="w3-center w3-round w3-display-bottommiddle">
+
       {% block footer %}
       &copy; Copyright 2024 by <a href="/">Song-Ren Wang</a>.
       {% endblock %}
+  </div>
 
-    </div>
   </body>
+
 </html>
