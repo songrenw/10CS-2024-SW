@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Welcome{% endblock %}
+{% block content %}
+<h1><b> hello {{ user }} </b></h1> <!-- display username using session -->
+<form action="/" method="get">
+    <button class = "button" type="submit">Logout</button>
+</form>
+{% endblock %}

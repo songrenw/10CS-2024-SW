@@ -13,8 +13,21 @@
         <label for="password">Password:</label>
         <input class="input" type="password" name="password" id="password" required>
         <br>
+    <!-- Add the reCAPTCHA widget -->
+    <div class="g-recaptcha" data-sitekey="6LflYjwqAAAAAEsmC748UKQYO5F_yNL8lN3rzNUB"></div>
         <button class="button" type="submit">Register</button>
 </form>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div>
+                {% for message in messages %}
+                    <p style="color: #ffffff;">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
     <p>Already have an account? <a href=/login><button class = "button button" type ="submit">Login</button></a></p>
             </div>
+    <!-- Include reCAPTCHA JS -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 {% endblock %}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with GPT</title>
+</head>
+<body>
+    <h1>Chat with GPT</h1>
+
+    <form method="POST">
+        <label for="user_input">Your message:</label><br>
+        <textarea id="user_input" name="user_input" rows="4" cols="50" placeholder="Ask something..."></textarea><br>
+        <button type="submit">Send</button>
+    </form>
+
+    {% if user_input %}
+        <h2>Your message:</h2>
+        <p>{{ user_input }}</p>
+    {% endif %}
+
+    {% if gpt_response %}
+        <h2>GPT's response:</h2>
+        <p>{{ gpt_response }}</p>
+    {% endif %}
+</body>
+</html>

@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+import requests
+import openai
 # Flask, the web app framework used to build the web application
 # sqlite3 - used for interacting with SQLite3 database
 # render_template, used to render the html template
@@ -10,9 +12,20 @@ import os
 # session, manages the user info
 # flash - used to display message to the user
 # datatime - handle data and time poeration
+# api - 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
 
 app = Flask(__name__) # this creates an instance of the Flask class
 app.secret_key = "A3f9K7pQ2"
+# Recaptcha key
+RECAPTCHA_SECRET_KEY = '6LflYjwqAAAAALDnB_9bLGqKoKH3MgHL-rrX_mCA'
+# OpenAI API Key
+openai.api_key = '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'
+
+def query_openai(api_key, prompt):
+    headers = {'Authorization': f'Bearer {api_key}'}
+    data = {'prompt': prompt, 'max_tokens': 150}
+    response = requests.post('https://api.openai.com/v1/completions', headers=headers, json=data)
+    return response.json()
 
 def init_db():  # a function to initialise the database and create the users table if it doesn't exist
     conn = sqlite3.connect('ai_flask.db')  # connects to the database name basic_flask.db
@@ -57,23 +70,44 @@ def login_post():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    # Handle registration logic
     if request.method == 'POST':
+        # Validate reCAPTCHA
+        recaptcha_response = request.form['g-recaptcha-response']
+        if not recaptcha_response:
+            flash('Please complete the reCAPTCHA.', 'error')
+            return redirect(url_for('register'))
+
+        # Verify reCAPTCHA with Google
+        recaptcha_verification_url = 'https://www.google.com/recaptcha/api/siteverify'
+        data = {
+            'secret': RECAPTCHA_SECRET_KEY,
+            'response': recaptcha_response,
+            'remoteip': request.remote_addr
+        }
+        #bypass verify, due to SLL error
+        recaptcha_verify = requests.post(recaptcha_verification_url, data=data, verify=False)
+        recaptcha_result = recaptcha_verify.json()
+
+        if not recaptcha_result.get('success'):
+            flash('Please try again.', 'error')
+            return redirect(url_for('register'))
+
+        # Handle registration logic if reCAPTCHA is valid
         try:
-            username = request.form['username']  # gets the username from the form
-            password = request.form['password']  # gets the password from the form
-            # Hash the password before saving it
+            username = request.form['username']
+            password = request.form['password']
             hashed_password = generate_password_hash(password, method='scrypt', salt_length=8)
-            conn = sqlite3.connect('ai_flask.db')  # connects to the database
-            cursor = conn.cursor() # creates a cursor object to interact with the database
-            # inserts the user details into the users table
+            conn = sqlite3.connect('ai_flask.db')
+            cursor = conn.cursor()
             cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, hashed_password))
-            conn.commit() # commit the changes to the database
-            conn.close()  # closes the connection to the database
-            flash('User registered successfully!', 'success')  # displays a success message to the user
-            return redirect(url_for('login'))  # redirects the user to the login page
+            conn.commit()
+            conn.close()
+            flash('User registered successfully!', 'success')
+            return redirect(url_for('login'))
         except KeyError as e:
+            flash('An error occurred during registration.', 'error')
             return render_template('register.html')
+
     return render_template('register.html')
 
 @app.route('/welcome')
@@ -81,6 +115,7 @@ def welcome():
     if 'user' in session:
         user = session['user']
         return render_template('welcome.html', user=user)
+
     return redirect(url_for('login'))
 
 @app.route('/logout/', methods=['GET'])
@@ -88,6 +123,13 @@ def logout():
     session.pop('user', None)
     return redirect(url_for('home'))
 # Main code to run the flask app nd initialise the database
+
+@app.route("/chatgpt",methods=["POST","GET"])
+def chatgpt():
+    pass
+
+    # If GET request, simply render the form
+    return render_template('chatgpt.html')
 
 
 
