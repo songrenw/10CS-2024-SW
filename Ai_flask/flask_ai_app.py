@@ -14,6 +14,7 @@ import os
 app = Flask(__name__) # this creates an instance of the Flask class
 app.secret_key = "A3f9K7pQ2"
 
+
 def init_db():  # a function to initialise the database and create the users table if it doesn't exist
     conn = sqlite3.connect('ai_flask.db')  # connects to the database name basic_flask.db
     cursor = conn.cursor()  # creats a cursor object to interact with the database using SQL commands

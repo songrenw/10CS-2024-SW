@@ -3,7 +3,10 @@ import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import requests
+from openai import OpenAI, RateLimitError
 import openai
+from config import Config
+import time
 # Flask, the web app framework used to build the web application
 # sqlite3 - used for interacting with SQLite3 database
 # render_template, used to render the html template
@@ -18,9 +21,8 @@ app = Flask(__name__) # this creates an instance of the Flask class
 app.secret_key = "A3f9K7pQ2"
 # Recaptcha key
 RECAPTCHA_SECRET_KEY = '6LflYjwqAAAAALDnB_9bLGqKoKH3MgHL-rrX_mCA'
-# OpenAI API Key
-openai.api_key = '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'
 
+client = OpenAI(api_key=Config.OPENAI_API_KEY)
 def query_openai(api_key, prompt):
     headers = {'Authorization': f'Bearer {api_key}'}
     data = {'prompt': prompt, 'max_tokens': 150}
@@ -124,9 +126,35 @@ def logout():
     return redirect(url_for('home'))
 # Main code to run the flask app nd initialise the database
 
-@app.route("/chatgpt",methods=["POST","GET"])
+@app.route('/chatgpt')
+def chat_page():
+    return render_template('chatgpt.html')
+
+@app.route("/chatgpt",methods=["GET", "POST"])
 def chatgpt():
-    pass
+    user_message = request.form['message']
+    print(user_message)
+    print(client)
+
+    retries = 3
+    for i in range(retries):
+        try:
+            # Call OpenAI API
+            response = client.chat.completions.create(model="gpt-3.5-turbo",  # Use the cheaper model if possible
+                                                      messages=[
+                                                          {"role": "user", "content": user_message}
+                                                      ],
+                                                      max_tokens=150,
+                                                      temperature=0.7)
+
+            chatbot_reply = response.choices[0].message.content.strip()
+            return {'message': chatbot_reply}
+
+        except RateLimitError:  # Catch the rate limit error properly
+            if i < retries - 1:
+                time.sleep(2 ** i)  # Exponential backoff: wait and retry
+            else:
+                return {'message': "Error: Rate limit exceeded. Please try again later."}
 
     # If GET request, simply render the form
     return render_template('chatgpt.html')
