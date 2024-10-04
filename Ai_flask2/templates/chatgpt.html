@@ -3,8 +3,13 @@
 {% block content %}
 <!-- form message -->
 <form action="/chatgpt" method="post">
-    <label for="message">Message:</label>
-    <input class="input" type="text" name="message" id="message" required>
-    <button class="button" type="submit">Enter</button>
+    <div class="w3-container w3-card" style="max-width: 400px;">
+        <h1 class="w3-center">AI Chatbot</h1>
+        <div id="chat-box"><textarea name="message" row="30" clos="40"></textarea>
+        </div>
+            <input class="input" type="text" name="message" id="message" required>
+        <br>
+        <button class="button" type="submit">Enter</button>
+    </div>
 </form>
     {% endblock %}

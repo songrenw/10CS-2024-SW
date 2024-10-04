@@ -15,12 +15,12 @@ import time
 # session, manages the user info
 # flash - used to display message to the user
 # datatime - handle data and time poeration
-# api - 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
+
 
 app = Flask(__name__) # this creates an instance of the Flask class
 app.secret_key = "A3f9K7pQ2"
 # Recaptcha key
-RECAPTCHA_SECRET_KEY = '6LflYjwqAAAAALDnB_9bLGqKoKH3MgHL-rrX_mCA'
+RECAPTCHA_SECRET_KEY = Config.RECAPTCHA_SECRET_KEY
 
 client = OpenAI(api_key=Config.OPENAI_API_KEY)
 def query_openai(api_key, prompt):
@@ -30,7 +30,7 @@ def query_openai(api_key, prompt):
     return response.json()
 
 def init_db():  # a function to initialise the database and create the users table if it doesn't exist
-    conn = sqlite3.connect('ai_flask.db')  # connects to the database name basic_flask.db
+    conn = sqlite3.connect('ai_flask.db')  # connects to the da tabase name basic_flask.db
     cursor = conn.cursor()  # creats a cursor object to interact with the database using SQL commands
     # cursor.execute() is used to execute SQL commands
     cursor.execute('''
@@ -140,7 +140,7 @@ def chatgpt():
     for i in range(retries):
         try:
             # Call OpenAI API
-            response = client.chat.completions.create(model="gpt-3.5-turbo",  # Use the cheaper model if possible
+            response = client.chat.completions.create(model="gpt-4o-mini",  # Use the cheaper model if possible
                                                       messages=[
                                                           {"role": "user", "content": user_message}
                                                       ],
