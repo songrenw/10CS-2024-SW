@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Gemini{% endblock %}
+{% block content %}
+<!-- form message -->
+<div class="w3-container w3-round-xxlarge w3-display-middle" style="background-color:rgba(0,0,0,0.51); color: #ffffff;">
+    <div class="w3-center">
+<form action="/gemini" method="post">
+    <!--div class="w3-container w3-card" style="max-width: 400px;"-->
+        <h1 class="w3-center">Gemini 1.5 flash</h1>
+            <input placeholder='type your message here' class="input" type="text" name="input" id="input" required>
+        <button class="button" type="submit">Enter</button>
+    </div>
+</form>
+    {% if prompt %}
+        <p>You: {{ prompt }}</p>
+    {% endif %}
+    {% if output %} <!-- get response from llama route and if there a response, display the response -->
+        <p>llama: {{ output }}</p>
+    {% endif %}
+
+   <br>
+        <a href="/welcome"><-back</a>
+    </div>
+    {% endblock %}

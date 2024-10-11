@@ -7,6 +7,8 @@ from openai import OpenAI, RateLimitError
 import openai
 from config import Config
 import time
+import google.generativeai as genai
+
 # Flask, the web app framework used to build the web application
 # sqlite3 - used for interacting with SQLite3 database
 # render_template, used to render the html template
@@ -22,7 +24,12 @@ app.secret_key = "A3f9K7pQ2"
 # Recaptcha key
 RECAPTCHA_SECRET_KEY = Config.RECAPTCHA_SECRET_KEY
 
+genai.configure(api_key=Config.GOOGLE_API_KEY)
+model=genai.GenerativeModel('gemini-1.5-flash')
 client = OpenAI(api_key=Config.OPENAI_API_KEY)
+#cached_llm = Ollama(model="llama3.1")
+api_endpoint= 'http://localhost:11434/api/chat'
+
 def query_openai(api_key, prompt):
     headers = {'Authorization': f'Bearer {api_key}'}
     data = {'prompt': prompt, 'max_tokens': 150}
@@ -34,12 +41,22 @@ def init_db():  # a function to initialise the database and create the users tab
     cursor = conn.cursor()  # creats a cursor object to interact with the database using SQL commands
     # cursor.execute() is used to execute SQL commands
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
-    )
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        )
     ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            query TEXT NOT NULL,
+            response TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+    ''') # create history table if it not exists
     conn.commit()  # commits the change to the database
     conn.close()  # closes the connection to the database to free up resources/memory
 
@@ -55,7 +72,7 @@ def login():
 def login_post():
     username = request.form['username'] # get the username from the database
     password = request.form['password']  # gets the password from the form
-    conn = sqlite3.connect('ai_flask.db')
+    conn = sqlite3.connect('ai_flask.db') # connet to the data base
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
     # ? is a placeholder for the values that will be passed in the execute() function
@@ -98,6 +115,7 @@ def register():
         try:
             username = request.form['username']
             password = request.form['password']
+            #hashed the password
             hashed_password = generate_password_hash(password, method='scrypt', salt_length=8)
             conn = sqlite3.connect('ai_flask.db')
             cursor = conn.cursor()
@@ -118,12 +136,20 @@ def welcome():
         user = session['user']
         return render_template('welcome.html', user=user)
 
+@app.route('/select_model', methods=['POST'])
+def select_model():
+    selected_model = request.form.get('route')  # Get the selected route from the form
+    if selected_model:
+        return redirect(selected_model)  # Redirect to the selected route
+    return redirect(url_for('welcome'))  # If no selection, return to welcome page
+
     return redirect(url_for('login'))
 
-@app.route('/logout/', methods=['GET'])
+@app.route('/logout', methods=['GET'])
 def logout():
-    session.pop('user', None)
-    return redirect(url_for('home'))
+    session.pop('user', None) # remove user from session
+    print('pop')
+    return redirect(url_for('home')) # redirect to home route when logout
 # Main code to run the flask app nd initialise the database
 
 @app.route('/chatgpt')
@@ -159,6 +185,130 @@ def chatgpt():
     # If GET request, simply render the form
     return render_template('chatgpt.html')
 
+@app.route('/llama', methods=["GET", "POST"])
+def llama_post():
+    # if the user didn't login, they are redirect to login
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    #if method = to POST
+    '''
+    if request.method == 'POST':
+        print("Post //llama called")
+        query = request.form['query']
+        data = {
+            'model': 'llama3.1',
+            'stream': False,
+            'messages': query
+        }
+
+        print(f"YOU: {query}")
+        response = cached_llm.invoke(query)
+        #response = requests.post(api_endpoint, json=data)
+        # connect to the database
+        conn = sqlite3.connect('ai_flask.db')
+        cursor = conn.cursor()
+        # insert user history into the database
+        cursor.execute('INSERT INTO history (user, query, response) VALUES (?, ?, ?)', (session['user'], query, response))
+        conn.commit()
+        conn.close()
+        print(response)
+        return render_template("llama.html", response=response)
+
+        #if response.status_code == 200:
+            #response_data = response.json()
+
+            #assistant_response = response_data
+    #if GET request, just show the form
+    return render_template("llama.html")
+    '''
+    messages = []
+    if request.method == 'POST':
+        # Get the user input from the form
+        query = request.form['query']
+
+        # Append user's message
+        messages.append({'role': 'user', 'content': query})
+
+        # Prepare data for the API request
+        data = {
+            'model': 'llama3.1',
+            'stream': False,
+            'messages': messages
+        }
+
+        # Make the API request
+        response = requests.post(api_endpoint, json=data)
+
+        if response.status_code == 200:
+            response_data = response.json()
+            assistant_response = response_data['message']['content']
+
+            # Append the assistant's response to the message list
+            messages.append(response_data['message'])
+
+            # connect to the database
+            conn = sqlite3.connect('ai_flask.db')
+            cursor = conn.cursor()
+            # insert user history into the database
+            cursor.execute('INSERT INTO history (user, query, response) VALUES (?, ?, ?)',
+                           (session['user'], query, assistant_response))
+            conn.commit()
+            conn.close()
+
+            # Render the result
+            return render_template('llama.html', query=query, assistant_response=assistant_response)
+        else:
+            return render_template('llama.html', error='Failed to get response from Llama2.')
+
+    return render_template('llama.html')
+
+@app.route("/llama2", methods=["GET", "POST"])
+def llama2_post():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    messages = []
+    if request.method == 'POST':
+        # Get the user input from the form
+        user_input = request.form['user_input']
+
+        # Append user's message
+        messages.append({'role': 'user', 'content': user_input})
+
+        # Prepare data for the API request
+        data = {
+            'model': 'llama2',
+            'stream': False,
+            'messages': messages
+        }
+
+        # Make the API request
+        response = requests.post(api_endpoint, json=data)
+
+        if response.status_code == 200:
+            response_data = response.json()
+            assistant_response = response_data['message']['content']
+
+            # Append the assistant's response to the message list
+            messages.append(response_data['message'])
+
+            # Render the result on the web page
+            return render_template('llama2.html', user_input=user_input, assistant_response=assistant_response)
+        else:
+            return render_template('llama2.html', error='Failed to get response from Llama2.')
+
+    return render_template('llama2.html')
+
+@app.route('/gemini', methods=['GET', 'POSt'])
+def gemini():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    prompt = ""
+    output = ""
+    if request.method == 'POST':
+        prompt = request.form['input']
+        output = model.generate_content(prompt).text
+    return render_template('gemini.html', input=input, output=output)
 
 
 if __name__ == '__main__':
