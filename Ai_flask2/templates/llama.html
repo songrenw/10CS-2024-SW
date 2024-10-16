@@ -4,17 +4,21 @@
 <!-- form message -->
 <div class="w3-container w3-round-xxlarge w3-display-middle" style="background-color:rgba(0,0,0,0.51); color: #ffffff;">
     <div class="w3-center">
+    <a href="/history" class="material-icons">history</a><p>^history^</p>
 <form action="/llama" method="post">
     <!--div class="w3-container w3-card" style="max-width: 400px;"-->
         <h1 class="w3-center">llama 3.1</h1>
             <input placeholder="type your message here" class="input" type="text" name="query" id="query" required>
         <button class="button" type="submit">Enter</button>
 </form>
-    {% if query %}
+    {% if query %} <!-- if get user query, display it on the html files -->
         <p>You: {{ query }}</p>
     {% endif %}
     {% if assistant_response %} <!-- get response from llama route and if there a response, display the response -->
         <p>llama: {{ assistant_response }}</p>
+    {% endif %}
+    {% if error %}
+        <p class="w3-red">{{ error }}</p>
     {% endif %}
         </div>
     <br>

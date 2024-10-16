@@ -4,6 +4,7 @@
 <!-- form message -->
 <div class="w3-container w3-round-xxlarge w3-display-middle" style="background-color:rgba(0,0,0,0.51); color: #ffffff;">
     <div class="w3-center">
+<a href="/history" class="material-icons">history</a><p>^history^</p> <!-- direct user to history route so they can check their chatbot history -->
 <form action="/gemini" method="post">
     <!--div class="w3-container w3-card" style="max-width: 400px;"-->
         <h1 class="w3-center">Gemini 1.5 flash</h1>
@@ -11,11 +12,11 @@
         <button class="button" type="submit">Enter</button>
     </div>
 </form>
-    {% if prompt %}
-        <p>You: {{ prompt }}</p>
+    {% if input %}
+        <p>You: {{ input }}</p>
     {% endif %}
     {% if output %} <!-- get response from llama route and if there a response, display the response -->
-        <p>llama: {{ output }}</p>
+        <p>Gemini: {{ output }}</p>
     {% endif %}
 
    <br>
