@@ -17,5 +17,8 @@
 <p> {{ response }}</p>
         {% endfor %}
         <a href="/welcome"><-back</a> <!-- link to /welcome page, so the user can easily go back -->
+     <form action="/logout" method="get">
+    <button class = "button" type="submit">Logout</button>
+</form>
     </div>
        {% endblock %}

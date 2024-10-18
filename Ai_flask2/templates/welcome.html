@@ -9,7 +9,8 @@
     <div class="w3-dropdown-hover w3-round-large">
     <button class="w3-button w3-round-large button">Chose model</button>
     <div class="w3-dropdown-content w3-bar-block w3-animate-opacity w3-round-large " style="background-color:rgba(0,0,0,0.51); color: #ffffff;">
-      <a href="/chatgpt" class="w3-bar-item w3-button w3-round-large">ChatGPT</a>
+      <!-- this link to all the ai model, using herf, which link to that html when clicked -->
+        <a href="/chatgpt" class="w3-bar-item w3-button w3-round-large">ChatGPT</a>
       <a href="/llama" class="w3-bar-item w3-button w3-round-large">llama 3.1</a>
       <a href="/llama2" class="w3-bar-item w3-button w3-round-large">llama 2</a>
         <a href="/gemini" class="w3-bar-item w3-button w3-round-large">Gemini 1.5 flash</a>
@@ -17,6 +18,7 @@
         </div>
 <br>
 <br>
+<!-- form to /logout route, to fun logout function, which pop user session, which mean that they are logout -->
 <form action="/logout" method="get">
     <button class = "button" type="submit">Logout</button>
 </form>

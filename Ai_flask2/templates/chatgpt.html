@@ -8,12 +8,18 @@
 <form action="/chatgpt" method="post">
     <!--div class="w3-container w3-card" style="max-width: 400px;"-->
         <h1 class="w3-center">ChatGPT</h1>
-            <input class="input" type="text" name="message" id="message" required>
-        <br>
+    <input placeholder='type your message here' class="input" type="text" name="message" id="message" required>
         <button class="button" type="submit">Enter</button>
     </div>
 </form>
    <br>
+    {% if error %} <!-- display the error(max limit exceed) in the html -->
+        <p class="w3-red w3-round-large">{{ error }}</p>
+    {% endif %}
         <a href="/welcome"><-back</a>
+     <form action="/logout" method="get">
+    <button class = "button" type="submit">Logout</button>
+</form>
+
     </div>
     {% endblock %}

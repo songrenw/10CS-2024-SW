@@ -23,7 +23,8 @@ import google.generativeai as genai
 app = Flask(__name__) # this creates an instance of the Flask class
 app.secret_key = "A3f9K7pQ2" #app secret key
 # Recaptcha key
-#RECAPTCHA_SECRET_KEY = Config.RECAPTCHA_SECRET_KEY #get recaptcha secret key from config,py which link to the .env files
+RECAPTCHA_SECRET_KEY = Config.RECAPTCHA_SECRET_KEY#get recaptcha secret key from config,py which link to the .env files
+RECAPTCHA_SITE_KEY = "6LflYjwqAAAAAEsmC748UKQYO5F_yNL8lN3rzNUB"
 
 genai.configure(api_key=Config.GOOGLE_API_KEY) #gemini api from .env file through Config def
 model=genai.GenerativeModel('gemini-1.5-flash') #identify what model is gemini using, in this case is 'genmini 1.5 flash"
@@ -90,9 +91,9 @@ def login_post():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    # when request method is post, send data such as user register to the db, and return to the html when the method is get, so there wont be 'method no allow error'
     if request.method == 'POST':
         # Validate reCAPTCHA
-        """
         recaptcha_response = request.form['g-recaptcha-response'] #get the recaptcha response from the form.
         if not recaptcha_response: # if the user did not click the 'im not a robot' tick bok
             flash('Please complete the reCAPTCHA.', 'error') #return a message
@@ -114,10 +115,11 @@ def register():
             return redirect(url_for('register'))
 
         # Handle registration logic if reCAPTCHA is valid
-        """
+        #when method is post, try the below.
         try:
             username = request.form['username'] #defind username and password vairable from the form.
             password = request.form['password']
+            token = request.form['g-recaptcha-response']
             #hashed the password
             hashed_password = generate_password_hash(password, method='scrypt', salt_length=8) #generate hashed password using scrypt methond.
 
@@ -128,6 +130,7 @@ def register():
             conn.close()
             flash('User registered successfully!', 'success')
             return redirect(url_for('login'))
+        # this is here to prevent as a syntax choice, as if there is keyerror, it will return back to register.
         except KeyError as e:
             flash('An error occurred during registration.', 'error')
             return render_template('register.html')
@@ -136,7 +139,7 @@ def register():
 
 @app.route('/welcome')
 def welcome():
-    if 'user' not in session: # return to login, so it wont run it to error while log in to welcome.html
+    if 'user' not in session: # a syntax choice. return to login, so it wont run it to error while log in to welcome.html as the welcome.html can not found the user in session, as the user didn't login.
         return redirect(url_for('login'))
     if 'user' in session: # if user in session
         user = session['user'] #defind user variable as session user
@@ -176,7 +179,7 @@ def chatgpt():
             if i < retries - 1:
                 time.sleep(2 ** i)  # Exponential backoff: wait and retry
             else:
-                return {'message': "Error: Rate limit exceeded. Please try again later."} # return error message if exceed the rate limit.
+                 return render_template('chatgpt.html', error="Error: Rate limit exceeded. Please try again later.")# return error message if exceed the rate limit.
 
     # If GET request, simply render the form
     return render_template('chatgpt.html')
@@ -189,7 +192,7 @@ def llama_post():
 
     messages = [] # empty list that will update every time the user enter a message and every time Ai sends a reponse
     if request.method == 'POST': # if the method is post do the following command. This is required to make sure the form(user input) is summited using the POST method, which the POST method is used to send data to the server, while GET is used to retreve data and display it on the website.
-        query = request.form['query'] # Get the user input from the query form at llama.html.
+        query = request.form['query'] # Get the user input from the query form at llama.html, in a form of input textbox and a submit button, which can be found in llama.html.
 
         # Append user's message/updating messages list to send to the AI model
         messages.append({'role': 'user', 'content': query})
@@ -219,6 +222,7 @@ def llama_post():
             cursor.execute('INSERT INTO history (user, query, response, model) VALUES (?, ?, ?, ?)',
                            (session['user'], query, assistant_response, model))
             # ? is a placeholder for the values that will be passed in the execute() function,
+            # ? is the placeholder used to prevent ssl attack.
             conn.commit() #commit is used to save the change
             conn.close() # this close the database to free up resources
 
