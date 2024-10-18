@@ -8,8 +8,9 @@ import openai
 from config import Config #import Config def from cofig.py
 import time
 import google.generativeai as genai
-
-
+# import from google.generativeai to make communicate with genmini working
+# import openai to communicate with openai and ratelimiterror is used to warm user that they reach the ratelimit.
+# import generate password has and check password hash to generate password hased for the db so people won't be able to get user info when they have the db.
 # Flask, the web app framework used to build the web application
 # sqlite3 - used for interacting with SQLite3 database
 # render_template, used to render the html template
@@ -22,10 +23,10 @@ import google.generativeai as genai
 
 app = Flask(__name__) # this creates an instance of the Flask class
 app.secret_key = "A3f9K7pQ2" #app secret key
-# Recaptcha key
+"""# Recaptcha key
 RECAPTCHA_SECRET_KEY = Config.RECAPTCHA_SECRET_KEY#get recaptcha secret key from config,py which link to the .env files
 RECAPTCHA_SITE_KEY = "6LflYjwqAAAAAEsmC748UKQYO5F_yNL8lN3rzNUB"
-
+"""
 genai.configure(api_key=Config.GOOGLE_API_KEY) #gemini api from .env file through Config def
 model=genai.GenerativeModel('gemini-1.5-flash') #identify what model is gemini using, in this case is 'genmini 1.5 flash"
 client = OpenAI(api_key=Config.OPENAI_API_KEY) # get open ai api from .env files throgh config def
@@ -93,13 +94,14 @@ def login_post():
 def register():
     # when request method is post, send data such as user register to the db, and return to the html when the method is get, so there wont be 'method no allow error'
     if request.method == 'POST':
+        """
         # Validate reCAPTCHA
         recaptcha_response = request.form['g-recaptcha-response'] #get the recaptcha response from the form.
         if not recaptcha_response: # if the user did not click the 'im not a robot' tick bok
             flash('Please complete the reCAPTCHA.', 'error') #return a message
             return redirect(url_for('register')) #reload the register url
 
-        # Verify reCAPTCHA with Google, using the url
+        # Verify reCAPTCHA with Google, using the url that will verify the user.
         recaptcha_verification_url = 'https://www.google.com/recaptcha/api/siteverify'
         data = {
             'secret': RECAPTCHA_SECRET_KEY,
@@ -115,11 +117,12 @@ def register():
             return redirect(url_for('register'))
 
         # Handle registration logic if reCAPTCHA is valid
+        """
         #when method is post, try the below.
         try:
             username = request.form['username'] #defind username and password vairable from the form.
             password = request.form['password']
-            token = request.form['g-recaptcha-response']
+            #token = request.form['g-recaptcha-response']
             #hashed the password
             hashed_password = generate_password_hash(password, method='scrypt', salt_length=8) #generate hashed password using scrypt methond.
 

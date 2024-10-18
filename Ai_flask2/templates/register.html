@@ -14,8 +14,8 @@
         <label for="password">Password:</label>
         <input class="input" type="password" name="password" id="password" required>
         <br>
-    <!-- Add the reCAPTCHA widget -->
-    <div class="g-recaptcha" data-sitekey="6LflYjwqAAAAAEsmC748UKQYO5F_yNL8lN3rzNUB" data-action="REGISTER"></div>
+    <!-- Add the reCAPTCHA widget >
+    <div class="g-recaptcha" data-sitekey="6LflYjwqAAAAAEsmC748UKQYO5F_yNL8lN3rzNUB" data-action="REGISTER"></div-->
         <button class="button" type="submit">Register</button>
 </form>
         {% with messages = get_flashed_messages() %}
@@ -29,6 +29,4 @@
     {% endwith %}
     <p>Already have an account? <a href=/login><button class = "button button" type ="submit">Login</button></a></p>
             </div>
-    <!-- reCAPTCHA JS to get the recapcha working-->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 {% endblock %}
